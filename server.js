@@ -22,8 +22,32 @@ server.post('/cars', async (req, res) => {
         const addedCar = await db('cars').where({ id: addedCarId[0] })
         return res.json(addedCar)
     } catch {
-        return res.status(500).json({ message: 'Failed to retrieve cars' });
+        return res.status(500).json({ message: 'Failed to add car' });
     }
-})
+});
+
+server.delete('/cars/:id', async (req, res) => {
+    const {id} = req.params;
+    try {
+        const deletedCar = await db('cars').where({ id: id })
+        await db('cars').where({ id: id }).del();
+        
+        return res.json(deletedCar)
+    } catch {
+        return res.status(500).json({ message: 'Failed to delete car' });
+    }
+});
+
+server.put('/cars/:id', async (req, res) => {
+    const {id} = req.params;
+    try {
+        
+        await db('cars').where({ id }).update(req.body);
+        const updatedCar = await db('cars').where({ id: id })
+        return res.json(updatedCar)
+    } catch {
+        return res.status(500).json({ message: 'Failed to update car changes' });
+    }
+});
 
 module.exports = server;
