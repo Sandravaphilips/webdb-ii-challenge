@@ -18,8 +18,9 @@ server.get('/cars', async (req, res) => {
 
 server.post('/cars', async (req, res) => {
     try {
-        const cars = await db('cars').insert(req.body)
-        return res.json(cars)
+        const addedCarId = await db('cars').insert(req.body);
+        const addedCar = await db('cars').where({ id: addedCarId[0] })
+        return res.json(addedCar)
     } catch {
         return res.status(500).json({ message: 'Failed to retrieve cars' });
     }
