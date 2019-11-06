@@ -26,7 +26,7 @@ server.post('/cars', async (req, res) => {
     }
 });
 
-server.delete('/cars/:id', async (req, res) => {
+server.delete('/cars/:id', validateCarId, async (req, res) => {
     const {id} = req.params;
     try {
         const deletedCar = await db('cars').where({ id: id })
@@ -38,7 +38,7 @@ server.delete('/cars/:id', async (req, res) => {
     }
 });
 
-server.put('/cars/:id', async (req, res) => {
+server.put('/cars/:id', validateCarId, async (req, res) => {
     const {id} = req.params;
     try {
         
@@ -49,5 +49,15 @@ server.put('/cars/:id', async (req, res) => {
         return res.status(500).json({ message: 'Failed to update car changes' });
     }
 });
+
+function validateCarId(req, res, next) {
+    const {id} = req.params;
+
+    if (!id) {
+        return res.json({error: "please provide a valid id in the url"});
+    } else {
+        next();
+    }
+}
 
 module.exports = server;
